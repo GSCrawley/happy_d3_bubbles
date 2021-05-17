@@ -16,32 +16,7 @@ body {
 		  font-size: 14px;
 		  font-family: "Helvetica Neue", Helvetica;
 		}
-
-		div.tooltip {
-			position: absolute;
-			top: 100px;
-			left: 100px;
-		  -moz-border-radius:5px;
-			border-radius: 5px;
-		  border: 2px solid #000;
-		  background: #fff;
-			opacity: .9;
-		  color: black;
-			padding: 10px;
-			width: 300px;
-			font-size: 12px;
-			z-index: 10;
-		}
-
-		div.tooltip .title {
-			font-size: 13px;
-		}
-
-		div.tooltip .name {
-		  font-weight:bold;
-		}
-
-
+		
 
 		#footer {
 				  position: absolute;
@@ -56,19 +31,7 @@ body {
 				  text-align: left;
 				}
 
-				#owner{
-				  position: absolute;
-				  z-index: 1;
-				  display: block;
-				  font-weight: 300;
-				  text-shadow: 0 1px 0 #fff;
-				  top: 500px;
-				  left: 30px;
-				  text-align: left;
-				  color: #474747;
-				  padding-bottom: 20px;
-				  font-size: 10px;
-				}
+				
 
 				#SideText{
 					font-family: "Helvetica Neue", Helvetica;
@@ -153,14 +116,14 @@ body {
 					position: absolute;
 					top: 140px;
 					left: 30px;
-					display:inline-block;
-					 padding:0.35em 1.2em;
-					 border:0.1em solid #FFFFFF;
-					 margin:0 0.3em 0.3em 0;
-					 border-radius:0.12em;
-					 box-sizing: border-box;
-					 text-align:center;
-					 transition: all 0.2s;
+					display: inline-block;
+					padding: 0.35em 1.2em;
+					border: 0.1em solid #FFFFFF;
+					margin: 0 0.3em 0.3em 0;
+					border-radius: 0.12em;
+					box-sizing: border-box;
+					text-align: center;
+					transition: all 0.2s;
 				}
 
 
@@ -169,57 +132,60 @@ body {
 					top: 250px;
 					left: 90px;
 					display:inline-block;
-					 padding:0.35em 1.2em;
-					 margin:0 0.3em 0.3em 0;
-					 border-radius:0.12em;
-					 box-sizing: border-box;
-					 text-decoration:none;
-					 transition: all 0.2s;
+					padding: 0.35em 1.2em;
+					margin: 0 0.3em 0.3em 0;
+					border-radius: 0.12em;
+					box-sizing: border-box;
+					text-decoration: none;
+					transition: all 0.2s;
 				}
 
-				#prettytooltip {
-				position: absolute;
-				width: 200px;
-				height: auto;
-				padding: 10px;
-				background-color: white;
-				-webkit-border-radius: 10px;
-				-moz-border-radius: 10px;
-				border-radius: 10px;
-				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-				box-shadow: 4px 4px 10px rgba(0, 100, 100, 0.4);
-				pointer-events: none;
-			}
-
-			#prettytooltip.hidden {
-				display: none;
-			}
-
-			#prettytooltip p {
-				margin: 0;
-				font-family: sans-serif;
-				font-size: 16px;
-				line-height: 20px;
-			}
-
-
-
-
 		</style>
+
+		<svg width="960" height="400"></svg>
 	</head>
 	<body>
-
-		<svg id="svg" width="600" height="600"></svg>
-
-		<script src="https://d3js.org/d3.v016.min.js"></script>
-		<script>
+		
+		<div id="body">
+			<div id="footer">
+				What do the happiest countries in the world have in common?
+				<div class="hint">
+					<span>Every year a worldwide survey takes place, with the goal of determining the average happiness of each country.<span/></br>
+					<span>What societal factors have the most effect on peoples' happiness level? Click the buttons below and find out!</span></br>
+					<span>Hover over a bubble to reveal the country. And just for fun, you can double-click on a bubble to highlight it and watch it on its journey</span>
+				</div>
+			</div>
+			<div id="buttons"></div>
+				<div id="SideText">
+				  <p id="p0" class="pTitle Side">Happiness score</p>
+					<p id="p2" class="Side">In 2019, Scandinavian countries ranked highest in the world on the happiness scale.</p>
+			  </div>
+			  <div id="chart"></div>
+			  <div id="BelowLeftText">
+					<p id="less">
+						This place is depressing.
+					</p>
+				  </div>
+					<div id="BelowRightText">
+					<p id = "more">
+						These people are too happy, something must be wrong with them
+					</p>
+			  </div>
+			  <div id="prettytooltip" class="hidden">
+				<p><strong id="country">Country</strong></p>
+				<p><span id="pretty_variable">Happiness score: </span><span id="pre_symbol"></span><span id="value">100</span><span id="post_symbol"></span></p>
+			</div>
+	</div>
+	<script type="text/javascript">
 			                                   
-		d3.csv('data/2019.csv').then(handleData) ||
-		d3.json('data/2019.json').then(handleData)
+		
+		// set page dimensions
+var width = 750,
+	height = 250,
+	radius = 10;
+	padding = 100;  
 
-		// Handle loaded data with a function
-		function handleData(data) {
+	
 				// To get started I made unique lists of 
 				// Find unique 
 				function findUnique(data, prop) {
@@ -246,8 +212,7 @@ body {
 				//     		-score
 
 							
-				// TODO: There are many duplicates for each happiness! 
-				// The duplicates need to be removed! 
+			
 
 				// Here we create a top level of styles and children matching the style
 				const sc = happinessScore.reduce((acc, name) => {
