@@ -16,7 +16,30 @@ body {
 		  font-size: 14px;
 		  font-family: "Helvetica Neue", Helvetica;
 		}
-		
+		div.tooltip {
+			position: absolute;
+			top: 100px;
+			left: 100px;
+		  -moz-border-radius:5px;
+			border-radius: 5px;
+		  border: 2px solid #000;
+		  background: #fff;
+			opacity: .9;
+		  color: black;
+			padding: 10px;
+			width: 300px;
+			font-size: 12px;
+			z-index: 10;
+		}
+
+		div.tooltip .title {
+			font-size: 13px;
+		}
+
+		div.tooltip .name {
+		  font-weight:bold;
+		}
+
 
 		#footer {
 				  position: absolute;
@@ -140,9 +163,35 @@ body {
 					transition: all 0.2s;
 				}
 
+				#prettytooltip {
+				position: absolute;
+				width: 200px;
+				height: auto;
+				padding: 10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				box-shadow: 4px 4px 10px rgba(0, 100, 100, 0.4);
+				pointer-events: none;
+			}
+
+			#prettytooltip.hidden {
+				display: none;
+			}
+
+			#prettytooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+
 		</style>
 
-		<svg width="960" height="400"></svg>
+		<svg width="960" height="200"></svg>
 	</head>
 	<body>
 		
@@ -163,13 +212,12 @@ body {
 			  <div id="chart"></div>
 			  <div id="BelowLeftText">
 					<p id="less">
-						This place is depressing.
+						Kinda Bummed
 					</p>
 				  </div>
 					<div id="BelowRightText">
 					<p id = "more">
-						These people are too happy, something must be wrong with them
-					</p>
+						Super Stoked					</p>
 			  </div>
 			  <div id="prettytooltip" class="hidden">
 				<p><strong id="country">Country</strong></p>
@@ -185,7 +233,227 @@ var width = 750,
 	radius = 10;
 	padding = 100;  
 
-	
+
+var buttons = d3.selectAll('#buttons')
+buttons.append('button')
+			 .text('Happiness')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+  	 	.style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+		  .style("background", "#ecf0f1")
+		  .style("border", "2px solid white")
+		  .style("cursor", "pointer")
+		  .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+		  .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'world_happiness_score')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('GDP')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'gdp_per_capita')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('School years')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'school_years')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('Sustainable economic development')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'sustainable_economic_development_assessment')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('Employment rate')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'employment_rate')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('Health expenditure')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'health_expenditure_per_person')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('Government effectiveness')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'government_effectiveness')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('Female MPs')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'women_mps_pct')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+buttons.append('button')
+			 .text('Control of corruption')
+			 .style("font-size", "10px")
+			 .style("font-family", "Helvetica Neue")
+			 .style("padding", "8px")
+			 .style("color", "#454545")
+			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("background", "#ecf0f1")
+			 .style("border", "2px solid white")
+			 .style("cursor", "pointer")
+			 .style("-webkit-box-shadow", "inset 0 -2px #dadedf")
+			 .style("box-shadow", "inset 0 -2px #dadedf")
+			 .attr('value', 'control_of_corruption')
+			 .classed('d_sel', true)
+			 .on("mouseover", function(d) {
+				 d3.select(this)
+				 		.style("background", "orange")
+						.style("color", "white")
+			 })
+			 .on("mouseout", function(d) {
+				 d3.select(this)
+				 	.style("background", "#ecf0f1")
+				 	.style("color", "#454545")
+			 })
+
+
+
 				// To get started I made unique lists of 
 				// Find unique 
 				function findUnique(data, prop) {
