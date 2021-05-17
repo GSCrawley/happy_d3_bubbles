@@ -1,0 +1,24 @@
+{
+  "name": "happy_bubbles",
+  "version": "1.0.0",
+  "description": "D3 data visualization 2019 World Happiness Index",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GSCrawley/happy_d3_bubbles.git"
+  },
+  "keywords": [
+    "D3",
+    "Data",
+    "Visualization"
+  ],
+  "author": "Gideon Crawley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GSCrawley/happy_d3_bubbles/issues"
+  },
+  "homepage": "GSCrawley.github.io/happy_d3_bubbles"                                          
+}
