@@ -23,7 +23,7 @@ body {
 		  -moz-border-radius:5px;
 			border-radius: 5px;
 		  border: 2px solid #000;
-		  background: #fff;
+		  background: #fff;                                                                                                                                    
 			opacity: .9;
 		  color: black;
 			padding: 10px;
@@ -265,7 +265,7 @@ buttons.append('button')
 			 .style("font-family", "Helvetica Neue")
 			 .style("padding", "8px")
 			 .style("color", "#454545")
-			 .style("text-shadow", "0 1px 2px rgba(0, 0, 0, 0.25)")
+			 .style("text-shadow", "0 1px m,                          2px rgba(0, 0, 0, 0.25)")
 			 .style("background", "#ecf0f1")
 			 .style("border", "2px solid white")
 			 .style("cursor", "pointer")
@@ -486,80 +486,46 @@ d3.csv('2019.csv', function(data){
 	var xScale = d3.scaleLinear()
 		.rangeRound([padding, width - padding])
 
+// a function to highlight points when clicked
+	var toggleHighlight = (function(){
+		 var current_stroke_width = 0.5
+		 var current_stroke = "black"
 
+	    return function(){
+					current_stroke_width = current_stroke_width == 0.5 ? 3 : 0.5
+					current_stroke = current_stroke == "black" ? "#C40320" : "black"
+	        d3.select(this).style("stroke-width", current_stroke_width)
+						.style("stroke", current_stroke);
+	    }
+	})();
+
+// set domain for selected variable
+	xScale.domain(d3.extent(data, function(d) { return d[selected_variable_scaled]; }));
+
+
+
+	function tick(){
+
+		d3.selectAll('.circ')
+			.attr('cx', function(d){return d.x})
+			.attr('cy', function(d){return d.y})
+	}
+
+
+	var circles = svg.selectAll('.circ')
+		.data(data)
+		.enter().append('circle').classed('circ', true)
+		.attr('r', function(d) { return radiusScale(d.population); })
+		.attr('cx', function(d){ return xScale(d[selected_variable_scaled]); })
+		.attr('cy', function(){ return height/2; })
+		.attr("fill", function(d) { return scaleColor(d.world_happiness_score_scaled); })
+		.attr("stroke", "black")
+		.attr("stroke-width", 0.5)
+		.on('click', toggleHighlight)
 
 
 			
 							
 			
 
-				// Here we create a top level of styles and children matching the style
-				const sc = happinessScore.reduce((acc, name) => {
-					acc[name] = {}
-					acc[name].children = data
-						.filter(d => d.sc === name )
-						.map(d => ({name: d['Brand']}))
-					return acc
-				}, {})
-
-				// console.log(styles) // Investigate this for duplicates. 
-
-				// Make hierarchical object
-				const happiness = {
-					name: 'World Happiness Report 2019',
-					children: happinessScore.map(name => {
-						return {
-							name, 
-							children: styles[name].children
-						}
-					})
-				}
-
-				// Create the nodes from happiness data hierarchy
-				let nodes = d3.hierarchy(happiness)
-
-				const width = 600
-				const height = 600
-
-				// Create a hierarchical pack layout with circles
-				const packlayout = d3.pack()
-				packlayout.size([height, width])
 				
-				nodes.sum(d => {
-				
-					if (d.children !== undefined) {
-						return 10 * d.children.length
-					}
-					return 10
-				})
-				// Add nodes to packlayout
-				nodes = packlayout(nodes)
-
-
-				// Start drawing! 
-				// create a group in the base svg element
-				const svg = d3.select('#svg')
-					.selectAll('g')
-					.data(nodes.descendants())
-					.enter()
-					// Add a descendant g node for each 
-					.append('g')
-					.attr('transform', d => `translate(${d.x}, ${d.y})`)
-
-				// Add circles to descendant node. 
-				svg
-					.append('circle')
-					.attr('r', d => d.r)
-					.attr('fill', 'rgba(0,0,0,0.1)')
-
-				// Comment this block out to remove the text
-				// svg
-				// 	.append('text')
-				// 	.attr('dy', 4)
-				 	// .text(d => d.children === undefined ? d.data.name : '')
-
-			}
-
-	</script>
-	</body>
-</html>
