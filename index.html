@@ -453,32 +453,43 @@ buttons.append('button')
 			 })
 
 
+var svg = d3.select('#chart').append('svg')
+			.attr('width', width)
+			.attr('height', height)
 
-				// To get started I made unique lists of 
-				// Find unique 
-				function findUnique(data, prop) {
-					return Array.from(new Set(data.map(obj => obj[prop])))
-				}
-				// Review #, Brand, Variety, Style, Country, Stars, Top Ten
-				const countryNames = findUnique(data, 'Country or region')
-				const overallRank = findUnique(data, 'Overall rank')
-				const happinessScore = findUnique(data, 'Score')
-				const grossDomesticProduct = findUnique(data, 'GDP per capita')
-				const socialSupport = findUnique(data, 'Social Support')
-				const lifeExpectancy = findUnique(data, 'Healthy life expectancy')
-				const freedomToChoose = findUnique(data, 'Freedom to make life choices')
-				const generosity = findUnique(data, 'Generosity')
-				const corruptionLevel = findUnique(data, 'Perceptions of corruption')
+// define a tooltip
+var div = d3.select("body").append("div")
+	.attr("class", "tooltip")
+	.style("opacity", 0);
 
-				console.log(countryNames)
-				console.log(overallRank)
-				condole.log(Score)
-				// TODO:Create a hieracrhy 
-				// 
-				//   - country
-				// 		- rank
-				//     		-score
+// formatting the data displayed in the tooltip
+var formatValue = d3.format(".2n");
 
+var selected_variable = 'world_happiness_score';
+var selected_variable_scaled = 'world_happiness_score_scaled';
+var pre_symbol = ""
+var post_symbol = ""
+var pretty_variable = "Happiness score: "
+var formatValue = d3.format(".2n");
+
+d3.csv('2019.csv', function(data){
+	// define some useful scales
+	var radiusScale = d3.scaleLinear()
+		.domain(d3.extent(data, function(d) { return parseFloat(d.population) }))
+		.range([7, 30]);
+	var scaleColor = d3.scaleSequential()
+  .domain([0, 1])
+  .interpolator(d3.interpolateViridis);;
+	var scaleStroke = d3.scaleOrdinal()
+		.domain(["Scandinavian Europe", "Europe", "Israel", "New Zealand", "NA"])
+		.range(["#338F72", "#73A521", "#C95A2F", "#5A6D98", "#A0A0A0"]);
+	var xScale = d3.scaleLinear()
+		.rangeRound([padding, width - padding])
+
+
+
+
+			
 							
 			
 
