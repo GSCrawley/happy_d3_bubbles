@@ -1,123 +1,321 @@
-<svg width="800" height="800"></svg>
+<!DOCTYPE html>
+<html>
+	<head>
+		<head>
+			<link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type='text/css'>
+	
+			<meta charset="utf-8">
 
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<script>
+		<title>What makes us happy?</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 
-	/*
-	
-	Bubble pack
-	This bubblepack shows the number of fans for the top 50 metal bands
-	*/
-	
-	// D3 Bubble chart example done with vanilla JS 
-	// https://observablehq.com/@d3/bubble-chart
-	
-	d3.json("data/metal.json")
-		.then(stuff => {
-			// console.log(stuff)
-			// Handle data after it is loaded
-			// Map the data loaded into objects with name, title, country, value
-			handleData(stuff.map(({band_name, fans, formed, origin}) => {
-				return {
-					name: band_name, 
-					formed: formed, 
-					country: origin, 
-					value: fans
+		<style type="text/css">
+body {
+		  /*overflow: hidden;*/
+		  margin: 0;
+		  font-size: 14px;
+		  font-family: "Helvetica Neue", Helvetica;
+		}
+
+		div.tooltip {
+			position: absolute;
+			top: 100px;
+			left: 100px;
+		  -moz-border-radius:5px;
+			border-radius: 5px;
+		  border: 2px solid #000;
+		  background: #fff;
+			opacity: .9;
+		  color: black;
+			padding: 10px;
+			width: 300px;
+			font-size: 12px;
+			z-index: 10;
+		}
+
+		div.tooltip .title {
+			font-size: 13px;
+		}
+
+		div.tooltip .name {
+		  font-weight:bold;
+		}
+
+
+
+		#footer {
+				  position: absolute;
+				  top: 0;
+				  z-index: 1;
+				  display: block;
+				  font-size: 30px;
+				  font-weight: 300;
+				  text-shadow: 0 1px 0 #fff;
+				  top: 30px;
+				  left: 30px;
+				  text-align: left;
 				}
-			}))
-		})
-	
-	// Handles data and draws bubbles
-	function handleData(data) {
-		// Define some constants 
-		const width = 1200
-		const height = 900
-		
-		// ----------------------------------
-		// Divide country into colors using ordinalScale() and schemeCategory10
-		// https://github.com/d3/d3-scale#ordinal-scales
-		// const color = d3.scaleOrdinal(data.map(d => d.country), d3.schemeCategory10)
-		
-		// schemeCategory10 provides 10 colors. Make your own values for an ordinal 
-		// scale and supply them in an array
-		const countries = data.reduce((acc, val) => acc.add(val.country),new Set())
-		const colors = []
-		let i = 0
-		countries.forEach(() => {
-			colors.push(`hsla(${360 / countries.size * i}, 50%, 50%, 1)`)
-			i += 1
-		})
-		const color = d3.scaleOrdinal(data.map(d => d.country), colors)
-		
-		// ---------------------------------
-		
-		// Define a helper to format values used in the overlay
-		const format = d3.format(",d")
-		
-		// d3.pack() fits elements into an area
-		// https://devdocs.io/d3~5/d3-hierarchy#_pack
-		const pack = data => d3.pack()	// Create a new pack layout
-			.size([width, height])				// Set the size of the pack
-			.padding(0)										// Set the padding on each 'leaf'
-		
-		// Must call d3.hierarchy() before you can compute a hierarchical layout
-		// Pass object with data as children
-		// https://devdocs.io/d3~5/d3-hierarchy
-		(d3.hierarchy({children: data}) 
-			.sum(d => d.value))
-		
-		// https://devdocs.io/d3~5/d3-hierarchy#_pack
-		const root = pack(data);
 
-		// Style the SVG container
-		const svg = d3.select(document.querySelector('svg'))
-			.style("width", "100%")
-			.style("height", "auto")
-			.attr("font-size", 10)
-			.attr("font-family", "sans-serif")
-			.attr("text-anchor", "middle")
-			.style('border', '1px solid')
+				#owner{
+				  position: absolute;
+				  z-index: 1;
+				  display: block;
+				  font-weight: 300;
+				  text-shadow: 0 1px 0 #fff;
+				  top: 500px;
+				  left: 30px;
+				  text-align: left;
+				  color: #474747;
+				  padding-bottom: 20px;
+				  font-size: 10px;
+				}
 
-		// Create 'leaves' for the layout these will be SVG groups <g>
-		const leaf = svg.selectAll("g")
-			.data(root.leaves())	// Get the data from the leaves of the root element
-			.join("g")						// Join includes x and y properties that were added from pack()
-				.attr("transform", d => `translate(${d.x + 1},${d.y + 1})`);
+				#SideText{
+					font-family: "Helvetica Neue", Helvetica;
+				  position: absolute;
+				  display: block;
+				  font-size: 12px;
+				  color: #474747;
+				  top: 190px;
+				  left: 65px;
+				  width: 800px;
+					font-weight: 300;
+				  text-shadow: 0 1px 0 #fff;
+				}
 
-		// Append circles to the <g> leag group
-		leaf.append("circle")
-			.attr("r", d => d.r)				// Set the opacity
-			.attr("fill-opacity", 0.7)	
-			.attr("fill", d => color(d.data.country)); // Get the color from the color() oridinal scale
-
-		// 
-		leaf.append("clipPath")
-			.append("use")
-
-		// Set the text content of the circle
-		leaf.append("text")
-			.attr("clip-path", d => d.clipUid)
-			.selectAll("tspan")
-			.data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
-			.join("tspan")
-				.attr("x", 0)
-				.attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.8}em`)
-				.text(d => d);
-		// Sets the hover label
-		leaf.append("title")
-			.text(d => `Formed: ${d.data.formed}\n${d.data.country}`);
-	}
+				#BelowLeftText{
+				  position: absolute;
+				  font-size: 14px;
+				  color: #474747;
+				  top: 340px;
+				  left: 50px;
+				  width: 110px;
+					text-align: center;
+					font-weight: 500;
+				  text-shadow: 0 1px 0 #fff;
+				}
 
 
-	/*
-	
-	Challenges 
-	1. Swap the data for something else. You'll want to show relative amounts...
-	2. Add some more text to show more information within each circle
-	3. Turn this into a hierchical tree (see the ramen bubble) You can arrange 
-		 bands on country/origin or style. There are lot of styles counrties would 
-		 be easier. 
-	
-	*/
+				#BelowRightText{
+				  position: absolute;
+				  font-size: 14px;
+				  color: #474747;
+				  top: 340px;
+					left: 780px;
+  				width: 110px;
+					text-align: center;
+					font-weight: 500;
+				  text-shadow: 0 1px 0 #fff;
+				}
 
-</script>
+				line {
+				  stroke: #000;
+				  stroke-width: 1.px;
+				}
+
+				.hint {
+				  position: absolute;
+				  left: 0;
+				  width: 900px;
+				  font-size: 12px;
+				  color: #999;
+				}
+
+				text {
+				  font-size: 10px;
+				}
+
+				.titles{
+				  font-size: 14px;
+				}
+
+				.annotate{
+				  font-size: 11px;
+				  fill: #474747;
+				}
+
+				path.chord {
+				  fill-opacity: .80;
+				}
+
+				.pTitle {
+				   font-size: 16px;
+				   text-shadow: 0 1px 0 #fff;
+				   fill: #474747;
+				   font-weight: bold;
+				}
+
+				.survey {
+				  font-size: 10px;
+				}
+
+				#buttons {
+					position: absolute;
+					top: 140px;
+					left: 30px;
+					display:inline-block;
+					 padding:0.35em 1.2em;
+					 border:0.1em solid #FFFFFF;
+					 margin:0 0.3em 0.3em 0;
+					 border-radius:0.12em;
+					 box-sizing: border-box;
+					 text-align:center;
+					 transition: all 0.2s;
+				}
+
+
+				#chart {
+					position: absolute;
+					top: 250px;
+					left: 90px;
+					display:inline-block;
+					 padding:0.35em 1.2em;
+					 margin:0 0.3em 0.3em 0;
+					 border-radius:0.12em;
+					 box-sizing: border-box;
+					 text-decoration:none;
+					 transition: all 0.2s;
+				}
+
+				#prettytooltip {
+				position: absolute;
+				width: 200px;
+				height: auto;
+				padding: 10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				box-shadow: 4px 4px 10px rgba(0, 100, 100, 0.4);
+				pointer-events: none;
+			}
+
+			#prettytooltip.hidden {
+				display: none;
+			}
+
+			#prettytooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+
+
+
+
+		</style>
+	</head>
+	<body>
+
+		<svg id="svg" width="600" height="600"></svg>
+
+		<script src="https://d3js.org/d3.v016.min.js"></script>
+		<script>
+			                                   
+		d3.csv('data/2019.csv').then(handleData) ||
+		d3.json('data/2019.json').then(handleData)
+
+		// Handle loaded data with a function
+		function handleData(data) {
+				// To get started I made unique lists of 
+				// Find unique 
+				function findUnique(data, prop) {
+					return Array.from(new Set(data.map(obj => obj[prop])))
+				}
+				// Review #, Brand, Variety, Style, Country, Stars, Top Ten
+				const countryNames = findUnique(data, 'Country or region')
+				const overallRank = findUnique(data, 'Overall rank')
+				const happinessScore = findUnique(data, 'Score')
+				const grossDomesticProduct = findUnique(data, 'GDP per capita')
+				const socialSupport = findUnique(data, 'Social Support')
+				const lifeExpectancy = findUnique(data, 'Healthy life expectancy')
+				const freedomToChoose = findUnique(data, 'Freedom to make life choices')
+				const generosity = findUnique(data, 'Generosity')
+				const corruptionLevel = findUnique(data, 'Perceptions of corruption')
+
+				console.log(countryNames)
+				console.log(overallRank)
+				condole.log(Score)
+				// TODO:Create a hieracrhy 
+				// 
+				//   - country
+				// 		- rank
+				//     		-score
+
+							
+				// TODO: There are many duplicates for each happiness! 
+				// The duplicates need to be removed! 
+
+				// Here we create a top level of styles and children matching the style
+				const sc = happinessScore.reduce((acc, name) => {
+					acc[name] = {}
+					acc[name].children = data
+						.filter(d => d.sc === name )
+						.map(d => ({name: d['Brand']}))
+					return acc
+				}, {})
+
+				// console.log(styles) // Investigate this for duplicates. 
+
+				// Make hierarchical object
+				const happiness = {
+					name: 'World Happiness Report 2019',
+					children: happinessScore.map(name => {
+						return {
+							name, 
+							children: styles[name].children
+						}
+					})
+				}
+
+				// Create the nodes from happiness data hierarchy
+				let nodes = d3.hierarchy(happiness)
+
+				const width = 600
+				const height = 600
+
+				// Create a hierarchical pack layout with circles
+				const packlayout = d3.pack()
+				packlayout.size([height, width])
+				
+				nodes.sum(d => {
+				
+					if (d.children !== undefined) {
+						return 10 * d.children.length
+					}
+					return 10
+				})
+				// Add nodes to packlayout
+				nodes = packlayout(nodes)
+
+
+				// Start drawing! 
+				// create a group in the base svg element
+				const svg = d3.select('#svg')
+					.selectAll('g')
+					.data(nodes.descendants())
+					.enter()
+					// Add a descendant g node for each 
+					.append('g')
+					.attr('transform', d => `translate(${d.x}, ${d.y})`)
+
+				// Add circles to descendant node. 
+				svg
+					.append('circle')
+					.attr('r', d => d.r)
+					.attr('fill', 'rgba(0,0,0,0.1)')
+
+				// Comment this block out to remove the text
+				// svg
+				// 	.append('text')
+				// 	.attr('dy', 4)
+				 	// .text(d => d.children === undefined ? d.data.name : '')
+
+			}
+
+	</script>
+	</body>
+</html>
