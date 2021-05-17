@@ -524,6 +524,56 @@ d3.csv('2019.csv', function(data){
 		.on('click', toggleHighlight)
 
 
+		circles.on("mouseover", function(d) {
+					// div.transition()
+					// 		.duration(100)
+					// 		.style("opacity", .9);
+					// div.text(d.country + "\n"  + selected_variable + ": " + formatValue(d[selected_variable]))
+					// 		.style("left", (d3.event.pageX) + "px")
+					// 		.style("top", (d3.event.pageY - 60) + "px")
+					//
+					d3.select(this)
+						.attr("stroke", "black")
+						.attr("stroke-width", 3);
+
+
+					d3.select("#prettytooltip")
+//       px distance from left edge of svg
+						.style("left", (d3.event.pageX) + "px")
+//       px distance from top edge of svg
+						.style("top", (d3.event.pageY - 90) + "px")
+// 			 update value for label box
+						.select("#country")
+						.text(d.country)
+					d3.select("#prettytooltip")
+						.select("#value")
+						.text(formatValue(d[selected_variable]));
+					d3.select("#prettytooltip")
+						.select("#pretty_variable")
+						.text(pretty_variable);
+					d3.select("#prettytooltip")
+						.select("#post_symbol")
+						.text(post_symbol);
+					d3.select("#prettytooltip")
+						.select("#pre_symbol")
+						.text(pre_symbol);
+
+					//Show the tooltip
+					d3.select("#prettytooltip").classed("hidden", false);
+
+			   })
+			   .on("mouseout", function() {
+
+						//Hide the tooltip
+						d3.select("#prettytooltip").classed("hidden", true);
+						d3.select(this)
+							.attr("fill", function(d) {return scaleColor(d.world_happiness_score_scaled); })
+							.attr("stroke", "black")
+							.attr("stroke-width", 0.5)
+							.attr("r", function(d) { return radiusScale(d.population); });
+
+			   })
+
 			
 							
 			
