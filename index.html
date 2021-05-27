@@ -194,9 +194,9 @@ body {
 	</head>
 	<body>
 		
-		<div id="body">
+		<div id="body" style="background-color: #000;">
 			<div id="footer">
-				What do the happiest countries in the world have in common?
+				What makes us happy?
 				<div class="hint">
 					<span>Every year a worldwide survey takes place, with the goal of determining the average happiness of each country.<span/></br>
 					<span>What societal factors have the most effect on peoples' happiness level? Click the buttons below and find out!</span></br>
@@ -603,7 +603,7 @@ d3.csv('country_data.csv', function(data){
 
 			d3.select("#p0").transition().duration(800).style("opacity", 1).text("Happiness score");
 			d3.select("#p1").transition().duration(800).style("opacity", 1).text("Happiness is measured based on an the average happiness score collected in an annual worldwide survey.");
-			d3.select("#p2").transition().duration(800).style("opacity", 1).text("According to this survey, Scandinavian countries seem to be the happiest in the world, with Israel, Costa Rica, New Zealand and Australia up there too. All bubbles are colored based on their happiness.");
+			d3.select("#p2").transition().duration(800).style("opacity", 1).text("According to this survey, Scandinavian countries seem to be the happiest in the world. Brighter-colored bubbles indicate happier countries.");
 
 			d3.select("#less").transition().duration(800).style("opacity", 1).text("Less happy");
 			d3.select("#more").transition().duration(800).style("opacity", 1).text("More happy");
@@ -615,7 +615,7 @@ d3.csv('country_data.csv', function(data){
 
 			d3.select("#p0").transition().duration(800).style("opacity", 1).text("GDP per capita");
 			d3.select("#p1").transition().duration(800).style("opacity", 1).text("GDP per capita measures the value of a country's economic activity relative to the size of its population.");
-			d3.select("#p2").transition().duration(800).style("opacity", 1).text("The countries with the highest GDP per capita are Luxemborg and Singapore. In general it does seem as though happier countries have higher GDP per capita.");
+			d3.select("#p2").transition().duration(800).style("opacity", 1).text("The countries with the highest GDP per capita are Luxemborg and Singapore. While we all know that money doesn't buy happiness, it does seem as though happier countries have higher GDP per capita.");
 
 			d3.select("#less").transition().duration(800).style("opacity", 1).text("Lower GDP per capita");
 			d3.select("#more").transition().duration(800).style("opacity", 1).text("Higher GDP per capita");
